@@ -11,6 +11,14 @@ class Game
 
   attr_reader :p1_weapon, :p2_weapon, :turn
 
+  def self.create(player1, player2)
+    @game = Game.new(player1, player2)
+  end
+
+  def self.instance
+    @game
+  end
+
   def initialize(player1, player2)
     player2 = CpuPlayer.new if player2.name.nil?
     @players = [player1, player2]

@@ -6,6 +6,10 @@ require './lib/player'
 class RPSApp < Sinatra::Base
   enable :sessions
 
+  before do
+    @game = Game.instance
+  end
+
   get '/' do
     @player_count = session[:player_count]
     erb(:index)
@@ -19,24 +23,21 @@ class RPSApp < Sinatra::Base
   post '/names' do
     name1 = params[:player_1_name]
     name2 = params[:player_2_name]
-    session[:game] = Game.new(Player.new(name1), Player.new(name2))
+    Game.create(Player.new(name1), Player.new(name2))
     redirect to '/play'
   end
 
   get '/play' do
-    @game = session[:game]
     erb(:play)
   end
 
   post '/weapon' do
-    @game = session[:game]
     @game.turn.weapon = params[:weapon]
     @game.set_turn
     redirect to @game.stage
   end
 
   get '/endround' do
-    @game = session[:game]
     erb @game.round_result, layout: :weapons
   end
 
